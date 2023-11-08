@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/firebase/autenticacion/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -9,11 +10,48 @@ import { NavController } from '@ionic/angular';
 })
 export class MenuPage implements OnInit {
 
-  constructor(private navCtrl: NavController, private router: Router) { }
+  constructor(
+    private navCtrl: NavController,
+    private router: Router,
+    private alertController: AlertController,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
+    // Tu código de inicialización, si es necesario.
   }
-    CerrarSesion() {
-    this.router.navigate(['/home']);
+  
+  async mostrarConfirmacionCerrarSesion() {
+    const alert = await this.alertController.create({
+      header: 'Cerrar Sesión',
+      message: '¿Estás seguro de que deseas abandonar 😞?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancelar');
+          },
+        },
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.cerrarSesion();
+          },
+        },
+      ],
+    });
+    
+    await alert.present();
+  }
+
+  cerrarSesion() {
+    this.authService.cerrarSesion()
+      .then(() => {
+        this.router.navigate(['/login']);
+      })
+      .catch((error: any) => {
+        console.error('Error al cerrar sesión: ', error);
+      });
   }
 }

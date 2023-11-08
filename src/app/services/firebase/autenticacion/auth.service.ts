@@ -53,6 +53,23 @@ export class AuthService {
     toast.present();
   }
 
+  
+// Método para cerrar sesión
+cerrarSesion(): Promise<void> {
+  // Cierra la sesión en Firebase
+  return this.afAuth.signOut()
+    .then(() => {
+      // Elimina la información del usuario y del vehículo del LocalStorage
+      localStorage.removeItem('loggedUser');
+
+      // Redirige al usuario a la página de inicio de sesión
+      this.router.navigate(['main-login/login']);
+    })
+    .catch(error => {
+      console.error('Error al cerrar sesión: ', error);
+      throw error;
+    });
+}
     // Promesa que envia un correo de recuperación de contraseña
     enviarCorreoRecuperacion(email: string): Promise<void> {
       return this.afAuth.sendPasswordResetEmail(email);
