@@ -48,7 +48,7 @@ export class MenuPage implements OnInit {
   cerrarSesion() {
     this.authService.cerrarSesion()
       .then(() => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/home']);
       })
       .catch((error: any) => {
         console.error('Error al cerrar sesión: ', error);
